@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/lista_productos.css' %}">
+    <title>Productos Disponibles</title>
+</head>
+<body>
+    <!-- Barra de navegación -->
+    <nav>
+        <div class="nav-brand">
+            <img src="/media/productos/logo1.png" alt="Logo" class="nav-logo">
+            <a href="{% url 'principal' %}"><h1>Deco & Regalos</h1></a>
+        </div>
+        <ul>
+            <li><a href="{% url 'principal' %}">Tienda</a></li>
+            <li><a href="{% url 'lista_productos' %}">Productos</a></li>
+            <li><a href="{% url 'ver_carrito' %}">Carrito{% if total_items > 0 %} ({{ total_items }}){% endif %}</a></li>
+            <li><a href="{ url 'ingresar' }">Ingresar</a></li>
+        </ul>
+    </nav>
+
+    <!-- Productos -->
+    <div class="container">
+        <h1 class="title">Nuestros Productos</h1>
+        <div class="product-grid">
+            {% for producto in productos %}
+                <div class="product-card">
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-image">
+                    <h3 class="product-name">{{ producto.nombre }}</h3>
+                    <p class="product-description">{{ producto.descripcion }}</p>
+                    <p class="product-pricee">$ {{ producto.precio }} / CLP</p>
+                    <a href="{% url 'agregar_al_carrito' producto.id %}" class="add-to-cart-btn">Añadir al Carrito</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div> 
+</body>
+</html>

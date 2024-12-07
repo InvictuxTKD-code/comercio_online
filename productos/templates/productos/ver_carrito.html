@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Tu Carrito</h1>
+
+    {% for item in carrito_items %}
+    <div class="item">
+        <p>Producto: {{ item.producto.nombre }}</p>
+        <p>Cantidad: {{ item.cantidad }}</p>
+        <p>Precio: ${{ item.producto.precio }}</p>
+        <p>Total: ${{ item.producto.precio * item.cantidad }}</p>
+    </div>
+    {% endfor %}
+    <p>Total carrito: ${{ total }}</p>
+
+
+    <a href="{% url 'checkout' %}" class="btn-checkout">Proceder al Pago</a>
+{% endblock %}

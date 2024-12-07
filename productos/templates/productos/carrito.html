@@ -1,0 +1,88 @@
+{% load static %}
+{% load custom_filters %}  <!-- Cargar el filtro personalizado -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras</title>
+    <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+</head>
+<body>
+
+    <!-- Barra de navegación -->
+    <nav>
+        <div class="nav-brand">
+            <img src="/media/productos/logo1.png" alt="Logo" class="nav-logo">
+            <a href="{% url 'principal' %}"><h1>Deco & Regalos</h1></a>
+        </div>
+        <ul>
+            <li><a href="{% url 'principal' %}">Tienda</a></li>
+            <li><a href="{% url 'lista_productos' %}">Productos</a></li>
+            <li><a href="{% url 'ver_carrito' %}">Carrito{% if total_items > 0 %} ({{ total_items }}){% endif %}</a></li>
+            <li><a href="{ url 'ingresar' }">Ingresar</a></li>
+        </ul>
+    </nav>
+
+    <!-- Contenedor principal del carrito -->
+    <div class="cart-container">
+        <h2 class="cart-title">Resumen de Compra</h2>
+        
+        <!-- Tabla de productos en el carrito -->
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Productos</th>
+                    <th style="padding-left: 50px;">Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in carrito_items %}
+                    <tr>
+                        <td class="product-details">
+                            <div class="product-image-container">
+                                <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="product-image">
+                            </div>
+                            <div class="product-name">{{ item.producto.nombre }}</div>
+                        </td>
+                        <td class="product-quantity">
+                            <form action="{% url 'actualizar_cantidad' item.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="quantity-container">
+                                    <button type="submit" name="action" value="decrease" class="quantity-btn decrease-btn">-</button>
+                                    <input type="text" name="cantidad" value="{{ item.cantidad }}" class="quantity-input" readonly>
+                                    <button type="submit" name="action" value="increase" class="quantity-btn increase-btn">+</button>
+                                </div>
+                            </form>
+                        </td>                        
+                        <td>$ {{ item.producto.precio|thousand_separator }}</td>
+                        <td>$ {{ item.producto.precio|multiply:item.cantidad|thousand_separator }}</td>  <!-- Precio Total por Producto -->
+                        <td>
+                            <!-- Botón para eliminar el producto -->
+                            <form action="{% url 'eliminar_del_carrito' item.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="remove-btn">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>                 
+        </table>
+
+        <!-- Total -->
+        <div class="total-container">
+            <h2>Total: $ {{ total|thousand_separator }}</h2>
+        </div>
+
+        <!-- Botones -->
+        <div class="cart-buttons">
+            <a href="{% url 'lista_productos' %}" class="continue-shopping-btn">Seguir comprando</a>
+            <a href="{ url 'realizar_pago' }" class="checkout-btn">Realizar Compra</a>
+        </div>
+    </div>
+
+</body>
+</html>
